@@ -11,6 +11,7 @@ ext {
     uberJarName = "${group}-${version}-all.jar"
     jarName = "${group}-${version}.jar"
     libs = "${buildDir}/libs"
+    output = "database-api.jar"
 }
 
 sourceCompatibility = 1.8
@@ -34,6 +35,19 @@ shadowJar {
     }
 }
 
+task renameTaskAll {
+    description 'Build GP-Socket'
+    group 'GP'
+
+    dependsOn 'build'
+
+    doLast {
+        file("${buildDir}/libs/${output}").delete()
+        file("${buildDir}/libs/${uberJarName}").renameTo(file("${buildDir}/libs/${output}"))
+        file("${buildDir}/libs/${jarName}").delete()
+    }
+}
+
 task renameTask {
     description 'Build GP-Socket'
     group 'GP'
@@ -41,7 +55,8 @@ task renameTask {
     dependsOn 'build'
 
     doLast {
-        file("${buildDir}/libs/${uberJarName}").renameTo(file("${buildDir}/libs/database-api.jar"))
-        file("${buildDir}/libs/${jarName}").delete()
+        file("${buildDir}/libs/${output}").delete()
+        file("${buildDir}/libs/${jarName}").renameTo(file("${buildDir}/libs/${output}"))
+        file("${buildDir}/libs/${uberJarName}").delete()
     }
 }
