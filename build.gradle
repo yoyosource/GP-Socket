@@ -11,7 +11,7 @@ ext {
     uberJarName = "${group}-${version}-all.jar"
     jarName = "${group}-${version}.jar"
     libs = "${buildDir}/libs"
-    output = "database-api.jar"
+    outputJarName = "database-api.jar"
 }
 
 sourceCompatibility = 1.8
@@ -42,8 +42,8 @@ task renameTaskAll {
     dependsOn 'build'
 
     doLast {
-        file("${buildDir}/libs/${output}").delete()
-        file("${buildDir}/libs/${uberJarName}").renameTo(file("${buildDir}/libs/${output}"))
+        file("${buildDir}/libs/${outputJarName}").delete()
+        file("${buildDir}/libs/${uberJarName}").renameTo(file("${buildDir}/libs/${outputJarName}"))
         file("${buildDir}/libs/${jarName}").delete()
     }
 }
@@ -55,8 +55,8 @@ task renameTask {
     dependsOn 'build'
 
     doLast {
-        file("${buildDir}/libs/${output}").delete()
-        file("${buildDir}/libs/${jarName}").renameTo(file("${buildDir}/libs/${output}"))
+        file("${buildDir}/libs/${outputJarName}").delete()
+        file("${buildDir}/libs/${jarName}").renameTo(file("${buildDir}/libs/${outputJarName}"))
         file("${buildDir}/libs/${uberJarName}").delete()
     }
 }
