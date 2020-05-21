@@ -54,11 +54,13 @@ public class GPSocket {
             }
 
             StringBuilder st = new StringBuilder();
-            int data = inputStream.available();
-            while (data > 0) {
+            while (inputStream.available() > 0) {
                 st.append((char)inputStream.read());
-                data--;
             }
+
+            socket.close();
+            outputStream.close();
+            inputStream.close();
 
             RepsoneType type = RepsoneType.UNKNOWN;
             if (st.toString().equals("SUCCEEDED")) {
