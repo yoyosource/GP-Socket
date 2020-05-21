@@ -35,6 +35,14 @@ shadowJar {
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
 task renameTaskAll {
     description 'Build GP-Socket'
     group 'GP'
