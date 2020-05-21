@@ -7,5 +7,5 @@ maven {
 ```
 
 ```groovy
-implementation 'yoyosource:GP-Socket:1'
+implementation 'yoyosource:GP-Socket:2'
 ```
