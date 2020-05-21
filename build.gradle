@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+group 'GP-Socket'
+version '1.0-SNAPSHOT'
+
+ext {
+    uberJarName = "${group}-${version}-all.jar"
+    jarName = "${group}-${version}.jar"
+    libs = "${buildDir}/libs"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'gpsocket.GPSocket'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+shadowJar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+task renameTask {
+    description 'Build GP-Socket'
+    group 'GP'
+
+    dependsOn 'build'
+
+    doLast {
+        file("${buildDir}/libs/${uberJarName}").renameTo(file("${buildDir}/libs/database-api.jar"))
+        file("${buildDir}/libs/${jarName}").delete()
+    }
+}
