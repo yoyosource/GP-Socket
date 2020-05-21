@@ -10,4 +10,12 @@ public class GPResponse {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return "GPResponse{" +
+                "type=" + type +
+                ", data='" + data + '\'' +
+                '}';
+    }
+
 }

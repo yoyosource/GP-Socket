@@ -1,46 +1,44 @@
 package gpsocket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandBuilder {
 
-    StringBuilder command = new StringBuilder();
+    private static String token = "";
 
-    private CommandBuilder append(String s) {
-        command.append(s);
+    public static void setToken(String token) {
+        CommandBuilder.token = token;
+    }
+
+    private String commandType;
+    private List<String> args = new ArrayList<>();
+    private int databasePaths = 0;
+
+    private CommandBuilder setCommandType(String commandType) {
+        this.commandType = commandType;
         return this;
     }
 
     public static CommandBuilder listCommand() {
-        return new CommandBuilder().append("list ");
+        return new CommandBuilder().setCommandType("list");
     }
 
     public static CommandBuilder copyCommand() {
-        return new CommandBuilder().append("copy ");
+        return new CommandBuilder().setCommandType("copy");
     }
 
     public static CommandBuilder moveCommand() {
-        return new CommandBuilder().append("move ");
+        return new CommandBuilder().setCommandType("move");
     }
 
     public CommandBuilder appendPath(String path) {
-        if (command.toString().startsWith("list ") && command.length() == 5) {
-            if (path.length() == 0) {
-                command.append("/");
-            }
-            if (path.startsWith("/")) {
-                command.append(path);
-            } else {
-                command.append("/").append(path);
+        if (commandType.equals("list")) {
+            if (args.isEmpty()) {
+                args.add(path);
             }
         }
-
-        if (command.toString().startsWith("copy ")) {
-            if (path.startsWith("@")) {
-                appendDatabasePath(path);
-            } else {
-                appendAbsolutePath(path);
-            }
-        }
-        if (command.toString().startsWith("move ")) {
+        if (commandType.equals("copy") || commandType.equals("move")) {
             if (path.startsWith("@")) {
                 appendDatabasePath(path);
             } else {
@@ -51,41 +49,50 @@ public class CommandBuilder {
     }
 
     public CommandBuilder appendDatabasePath(String databasePath) {
-        if (!(command.toString().startsWith("copy ") || (command.toString().startsWith("move ")))) {
-            return this;
-        }
-        if (!valid(true)) {
+        if (!(commandType.equals("copy") || commandType.equals("move"))) {
             return this;
         }
 
         if (!databasePath.startsWith("@")) {
             databasePath = "@" + databasePath;
         }
-        command.append(databasePath).append(" ");
+
+        if (args.size() < 2) {
+            args.add(databasePath);
+            databasePaths++;
+        }
         return this;
     }
 
     public CommandBuilder appendAbsolutePath(String absolutePath) {
-        if (!(command.toString().startsWith("copy ") || (command.toString().startsWith("move ")))) {
-            return this;
-        }
-        if (!valid(true)) {
+        if (!(commandType.equals("copy") || commandType.equals("move"))) {
             return this;
         }
 
-        command.append(absolutePath).append(" ");
+        if (args.size() < 2) {
+            args.add(absolutePath);
+        }
         return this;
     }
 
-    public boolean valid() {
-        return valid(false) && command.toString().contains("@");
-    }
-
-    private boolean valid(boolean lazyValidation) {
-        if (lazyValidation) {
-            return command.length() - command.toString().replace(" ", "").length() < 3;
+    String assembleCommand() {
+        if (commandType.equals("copy") || commandType.equals("move")) {
+            if (databasePaths == 0) {
+                throw new IllegalArgumentException();
+            }
+            if (args.size() != 2) {
+                throw new IllegalArgumentException();
+            }
+            return commandType + " " + token + " " + args.get(0) + " " + args.get(1);
         }
-        return command.length() - command.toString().replace(" ", "").length() == 2;
+        if (commandType.equals("list")) {
+            if (args.size() != 1) {
+                throw new IllegalArgumentException();
+            }
+            return commandType + " " + token + " " + args.get(0);
+        }
+
+        throw new IllegalArgumentException();
     }
 
 }

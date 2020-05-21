@@ -55,7 +55,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'yoyosource'
             artifactId = 'GP-Socket'
-            version = '1'
+            version = '2'
 
             from components.java
         }
