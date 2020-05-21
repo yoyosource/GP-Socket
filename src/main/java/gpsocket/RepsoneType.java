@@ -4,6 +4,7 @@ public enum  RepsoneType {
 
     SUCCESS,
     FAILURE,
+    TIMEOUT,
     EXCEPTION,
     INVALID,
     UNKNOWN,

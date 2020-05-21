@@ -45,11 +45,15 @@ public class GPSocket {
             outputStream.write(command.command.toString().getBytes());
             outputStream.flush();
 
+            long time = System.currentTimeMillis();
             while (inputStream.available() == 0) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                }
+                if (System.currentTimeMillis() - time > 5000) {
+                    return new GPResponse(RepsoneType.TIMEOUT, "");
                 }
             }
 
